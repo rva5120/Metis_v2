@@ -25,3 +25,13 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// Room Database and Worker API Versions
+ext {
+    roomVersion = '1.1.1'
+    archLifecycleVersion = '1.1.1'
+    workVersion = "1.0.0-beta01"
+}
+
+//ext.versions = [:]
+//versions.work = "1.0.0-beta01"
