@@ -68,14 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-
-        // Work Manager Solution - Part 5
-        // -1. Schedule OneTime request to save habits during onPause w/ APP_STATE = 0 (done)
-        // 0. Schedule OneTime request to save habits during onResume w/ APP_STATE = 1 (done)
-        // 1. Display the article (done)
-        // 2. Add a button that downloads article to the SD card
-        // 3. Add a button that downloads the DB to a file and saves it to the SD card (almost done)
-        // 4. Add a button to clear the DB (in case of space issues)
     }
 
 
@@ -123,11 +115,16 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Downloading file... Please Wait.", Toast.LENGTH_LONG).show();
 
-        // Create a notification to notify the user when the file is downloaded
-        
-        // Download the file
+        // Start a Worker to download the files and notify when done
+        OneTimeWorkRequest downloadDbWorkRequest = new OneTimeWorkRequest.Builder(DumpDBToFileWorker.class)
+                .build();
+        mWorkManager.enqueue(downloadDbWorkRequest);
 
     }
+
+    // Work Manager Solution - Part 5
+    // 2. Add a button that downloads article to the SD card
+    // 4. Add a button to clear the DB (in case of space issues)
 
     // SD Card download button
 
