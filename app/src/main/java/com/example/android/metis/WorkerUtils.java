@@ -1,11 +1,14 @@
 package com.example.android.metis;
 
 
-import android.content.BroadcastReceiver;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+
+import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.gms.location.ActivityRecognitionClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,9 +21,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
+// Work Manager Solution - Part 2 (next: AppsWorker)
+// 1. Registering AR Listener
+//      - Register the listener (done)
+//      - Modify the Intent Service to update the DB with the new activity, confidence and timestamp on the sync block (done)
+// 2. Modify the getCurrentHabit to read the activity, confidence and timestamp on the sync block from the DB instead (done)
+// 3. Remove the static variables (including the lock, the DB does not need it). (done... but activity was reported to being used...?)
+
 final class WorkerUtils {
 
-    static Habit getCurrentHabit(Context context, Boolean appState, String activity) {
+    static Habit getCurrentHabit(Context context, Boolean appState) {
 
         Habit habit;
 
@@ -60,7 +71,15 @@ final class WorkerUtils {
             String batteryState = getBatteryState(context);
 
             // Get Current Activity
-            String currentActivity = activity;
+            String currentActivity;
+            String activityConfidence;
+            String activityTime;
+            InformationDatabase database = InformationDatabase.getDatabase(context.getApplicationContext());
+            synchronized (InformationDatabase.getDatabase(context.getApplicationContext())) {
+                currentActivity = database.getCurrentActivity().getRecognizedActivity();
+                activityConfidence = database.getCurrentActivity().getConfidence();
+                activityTime = database.getCurrentActivity().getTimestamp();
+            }
 
             // Get App State
             String appStateString;
@@ -73,7 +92,8 @@ final class WorkerUtils {
 
             // Construct Habit
             habit = new Habit(timestamp, id, city, state, onWiFi,
-                    organisation, carrier, batteryState, currentActivity, appStateString);
+                    organisation, carrier, batteryState, currentActivity,
+                    activityConfidence, activityTime, appStateString);
 
         } catch (JSONException j) {
             j.printStackTrace();
@@ -81,10 +101,10 @@ final class WorkerUtils {
         }
 
         return habit;
-
     }
 
-    static StringBuilder getPublicIPResult() {
+
+    private static StringBuilder getPublicIPResult() {
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -109,7 +129,8 @@ final class WorkerUtils {
         return stringBuilder;
     }
 
-    static String getBatteryState(Context context) {
+
+    private static String getBatteryState(Context context) {
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, intentFilter);
@@ -131,4 +152,15 @@ final class WorkerUtils {
             return "NOT_CHARGING";
         }
     }
+
+
+    static void registerCurrentActivityListener(Context context) {
+
+        ActivityRecognitionClient activityRecognitionClient = ActivityRecognition.getClient(context);
+        Intent intent = new Intent(context, ActivityRecognitionIntentService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Request updates from AR API every 10 minutes
+        activityRecognitionClient.requestActivityUpdates(600000, pendingIntent);
+    }
+
 }

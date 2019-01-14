@@ -15,14 +15,14 @@ class PreferredArticle {
     @ColumnInfo(name = "timestamp")
     private String timestamp;
 
-    @ColumnInfo(name = "apps")
-    private String apps;
+    @ColumnInfo(name = "article")
+    private String article;
 
 
     // Constructor
-    PreferredArticle(@NonNull String timestamp, String apps) {
+    PreferredArticle(@NonNull String timestamp, String article) {
         this.timestamp = timestamp;
-        this.apps = apps;
+        this.article = article;
     }
 
 
@@ -32,13 +32,13 @@ class PreferredArticle {
         return timestamp;
     }
     String getApps() {
-        return apps;
+        return article;
     }
 
     void setTimestamp(@NonNull String timestamp) {
         this.timestamp = timestamp;
     }
     void setApps(String apps) {
-        this.apps = apps;
+        this.article = apps;
     }
 }

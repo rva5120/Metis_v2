@@ -38,14 +38,22 @@ class Habit {
     @ColumnInfo(name = "currentActivity")
     private String currentActivity;
 
+    @ColumnInfo(name = "activityConfidence")
+    private String activityConfidence;
+
+    @ColumnInfo(name = "activityTimestamp")
+    private String activityTimestamp;
+
     @ColumnInfo(name = "appState")
     private String appState;
 
 
     // Constructor
-    Habit(String timestamp, String id, String city, String state,
+    Habit(@NonNull String timestamp, String id, String city, String state,
           String onWiFi, String organisation, String carrier,
-          String batteryState, String currentActivity, String appState) {
+          String batteryState, String currentActivity,
+          String activityConfidence, String activityTimestamp,
+          String appState) {
         this.timestamp = timestamp;
         this.id = id;
         this.city = city;
@@ -55,6 +63,8 @@ class Habit {
         this.carrier = carrier;
         this.batteryState = batteryState;
         this.currentActivity = currentActivity;
+        this.activityConfidence = activityConfidence;
+        this.activityTimestamp = activityTimestamp;
         this.appState = appState;
     }
 
@@ -87,6 +97,12 @@ class Habit {
     }
     String getCurrentActivity() {
         return currentActivity;
+    }
+    String getActivityConfidence() {
+        return activityConfidence;
+    }
+    String getActivityTimestamp() {
+        return activityTimestamp;
     }
     String getAppState() {
         return appState;
@@ -126,6 +142,14 @@ class Habit {
 
     void setCurrentActivity(String currentActivity) {
         this.currentActivity = currentActivity;
+    }
+
+    void setActivityConfidence(String activityConfidence) {
+        this.activityConfidence = activityConfidence;
+    }
+
+    void setActivityTimestamp(String activityTimestamp) {
+        this.activityTimestamp = activityTimestamp;
     }
 
     void setAppState(String appState) {

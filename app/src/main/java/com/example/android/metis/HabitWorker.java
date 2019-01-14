@@ -23,7 +23,6 @@ public class HabitWorker extends Worker {
         Context context = getApplicationContext();
 
         try {
-
             // 2. Get the current habit
             Boolean appState;
             if (getInputData().getInt("APP_STATE", 0) == 0) {
@@ -31,8 +30,7 @@ public class HabitWorker extends Worker {
             } else {
                 appState = Boolean.TRUE;
             }
-            String activity = getInputData().getString("ACTIVITY");
-            Habit habit = WorkerUtils.getCurrentHabit(context, appState, activity);
+            Habit habit = WorkerUtils.getCurrentHabit(context, appState);
 
             // 3. Store habit on the DB
             InformationDatabase informationDatabase = InformationDatabase.getDatabase(getApplicationContext());

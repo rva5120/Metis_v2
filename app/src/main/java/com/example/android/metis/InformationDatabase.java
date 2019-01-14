@@ -7,6 +7,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 
 @Database(entities = {Habit.class, Apps.class, PreferredArticle.class}, version = 1, exportSchema = false)
 abstract class InformationDatabase extends RoomDatabase {
@@ -14,7 +16,7 @@ abstract class InformationDatabase extends RoomDatabase {
     // Attributes
     private static InformationDatabase INSTANCE;
     abstract InformationDao informationDao();
-    private static final String LOG_TAG = InformationDao.class.getSimpleName();
+    //private static final String LOG_TAG = InformationDao.class.getSimpleName();
 
 
     // Room Callback
@@ -49,11 +51,31 @@ abstract class InformationDatabase extends RoomDatabase {
         INSTANCE.informationDao().insertHabit(habit);
     }
 
+    List<Habit> getAllHabits() {
+        return INSTANCE.informationDao().getAllHabits();
+    }
+
     void insertApps(Apps apps) {
         INSTANCE.informationDao().insertApps(apps);
     }
 
+    List<Apps> getAllApps() {
+        return INSTANCE.informationDao().getAllApps();
+    }
+
     void insertPreferredArticle(PreferredArticle preferredArticle) {
         INSTANCE.informationDao().insertPreferredArticle(preferredArticle);
+    }
+
+    List<PreferredArticle> getAllPreferredArticles() {
+        return INSTANCE.informationDao().getAllPreferredArticles();
+    }
+
+    void insertCurrentActivity(RecognizedActivity recognizedActivity) {
+        INSTANCE.informationDao().insertRecognizedActivity(recognizedActivity);
+    }
+
+    RecognizedActivity getCurrentActivity() {
+        return INSTANCE.informationDao().getRecognizedActivity();
     }
 }
