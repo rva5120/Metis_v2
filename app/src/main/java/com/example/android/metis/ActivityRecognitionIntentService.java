@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
+import com.google.android.gms.location.ActivityTransitionEvent;
+import com.google.android.gms.location.ActivityTransitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.Calendar;
@@ -21,6 +23,34 @@ public class ActivityRecognitionIntentService extends IntentService {
     // Methods
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        if (ActivityTransitionResult.hasResult(intent)) {
+            ActivityTransitionResult result = ActivityTransitionResult.extractResult(intent);
+
+            if (result.getTransitionEvents() != null) {
+                for (ActivityTransitionEvent event : result.getTransitionEvents()) {
+                    Log.d("AR TRANSITION RCVD", "This is what we received..." + event.toString());
+
+                    String activity = getStringActivity(event.getActivityType());
+                    String confidence = "N/A_tran";
+
+                    synchronized (InformationDatabase.getDatabase(getApplicationContext())) {
+
+                        // Insert current activity on the DB
+                        RecognizedActivity recognizedActivity = new RecognizedActivity(activity, confidence,
+                                Calendar.getInstance().getTime().toString());
+                        InformationDatabase.getDatabase(getApplicationContext()).insertCurrentActivity(recognizedActivity);
+
+                        // Get Habit and store it!!
+                        Habit habit = WorkerUtils.getCurrentHabit(getApplicationContext(), Boolean.FALSE);
+                        InformationDatabase.getDatabase(getApplicationContext()).insertHabit(habit);
+
+                        Log.d("AR INTENT SERVICE//", "AR Sent us a TRANSITION Activity (added activity and habit to DB..)!!");
+                    }
+
+                }
+            }
+        }
 
         if (ActivityRecognitionResult.hasResult(intent)) {
 

@@ -3,6 +3,7 @@ package com.example.android.metis;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Permission;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
@@ -59,19 +59,33 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
-                Log.d("INITIALIZATION", "Requested a worker to get AR updates...");
+                Log.d("D_INITIALIZATION", "Requested a worker to get AR updates...");
+
+
+                // For Samsung ROMs, only schedule *one* Periodic Work Request!!
+                Log.d("D_DEVICE IDENTIFICATION", "Check for Samsung ROMs...:" + Build.MANUFACTURER + " " + Build.MODEL);
+                OneTimeWorkRequest appsCollectionRequest = new OneTimeWorkRequest.Builder(AppsWorker.class)
+                        .build();
+                mWorkManager.enqueue(appsCollectionRequest);
+                Log.d("INITIALIZATION", "Requested to get periodic updates of apps");
 
                 PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
+                Log.d("INITIALIZATION", "Requested to get periodic updates of habits");
 
-                Log.d("Inititalization", "Requested to get periodic updates of habits");
+
+                /*
+                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
+                        .build();
+                mWorkManager.enqueue(habitCollectionRequest);
+                Log.d("INITIALIZATION", "Requested to get periodic updates of habits");
 
                 PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
-
-                Log.d("Initialization", "Requested to get periodic updates of apps");
+                Log.d("INITIALIZATION", "Requested to get periodic updates of apps");
+                */
 
                 file.createNewFile();
 
@@ -91,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         // Register Work Request to Indicate that the user is using the app
         Data.Builder data = new Data.Builder();
         data.putInt("APP_STATE", 1);
+        Log.d("onRESUME", "Saving a one time habit from on resume...");
         OneTimeWorkRequest appUsageCollectionWorkRequest = new OneTimeWorkRequest.Builder(HabitWorker.class)
                 .setInputData(data.build())
                 .build();
@@ -108,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         // Register Work Request to indicate that the user is no longer using the app
         Data.Builder data = new Data.Builder();
         data.putInt("APP_STATE", 0);
+        Log.d("onPAUSE", "Saving a one time habit from on pause...");
         OneTimeWorkRequest appNotUsingCollectionWorkRequest = new OneTimeWorkRequest.Builder(HabitWorker.class)
                 .setInputData(data.build())
                 .build();
