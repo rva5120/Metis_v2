@@ -1,7 +1,6 @@
 package com.example.android.metis;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -22,17 +21,21 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     // Attributes
     private InformationDatabase informationDatabase;
     private WorkManager mWorkManager;
+    private static final String LOG = "METIS - DEBUGGING";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(LOG, "onCreate");
         // Ask for permissions!
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Work Manager Solution  - Part 1 (next: WorkerUtils)
         // 1. Check if the activity has been already recorded at some point FILE exists! (on our private dir)
-        File file = new File("/sdcard", "checking.activity");
+        File file = new File("/sdcard", "checking.activity.2");
         if (!file.exists()) {
             // Create a new file and schedule the Workers
             try {
@@ -59,32 +62,32 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
-                Log.d("D_INITIALIZATION", "Requested a worker to get AR updates...");
+                Log.d(LOG, "Requested a worker to get AR updates...");
 
 
                 // For Samsung ROMs, only schedule *one* Periodic Work Request!!
-                Log.d("D_DEVICE IDENTIFICATION", "Check for Samsung ROMs...:" + Build.MANUFACTURER + " " + Build.MODEL);
+                Log.d(LOG, "Check for Samsung ROMs...:" + Build.MANUFACTURER + " " + Build.MODEL);
                 OneTimeWorkRequest appsCollectionRequest = new OneTimeWorkRequest.Builder(AppsWorker.class)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
-                Log.d("INITIALIZATION", "Requested to get periodic updates of apps");
+                Log.d(LOG, "Requested to get periodic updates of apps");
 
                 PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
-                Log.d("INITIALIZATION", "Requested to get periodic updates of habits");
+                Log.d(LOG, "Requested to get periodic updates of habits");
 
 
                 /*
                 PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
-                Log.d("INITIALIZATION", "Requested to get periodic updates of habits");
+                Log.d(LOG, "Requested to get periodic updates of habits");
 
                 PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
-                Log.d("INITIALIZATION", "Requested to get periodic updates of apps");
+                Log.d(LOG, "Requested to get periodic updates of apps");
                 */
 
                 file.createNewFile();
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            Log.d("INITIALIZATION","Checking Activity File exisits! No need to initialize workers...?");
+            Log.d(LOG,"Checking Activity File exits! No need to initialize workers...?");
         }
     }
 
@@ -102,10 +105,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        Log.d(LOG, "OnResume");
+
         // Register Work Request to Indicate that the user is using the app
         Data.Builder data = new Data.Builder();
         data.putInt("APP_STATE", 1);
-        Log.d("onRESUME", "Saving a one time habit from on resume...");
+        Log.d(LOG, "Saving a one time habit from on resume...");
         OneTimeWorkRequest appUsageCollectionWorkRequest = new OneTimeWorkRequest.Builder(HabitWorker.class)
                 .setInputData(data.build())
                 .build();
@@ -120,10 +125,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+        Log.d(LOG, "onPause");
+
         // Register Work Request to indicate that the user is no longer using the app
         Data.Builder data = new Data.Builder();
         data.putInt("APP_STATE", 0);
-        Log.d("onPAUSE", "Saving a one time habit from on pause...");
+        Log.d(LOG, "Saving a one time habit from on pause...");
         OneTimeWorkRequest appNotUsingCollectionWorkRequest = new OneTimeWorkRequest.Builder(HabitWorker.class)
                 .setInputData(data.build())
                 .build();

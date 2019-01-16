@@ -39,6 +39,6 @@ public interface InformationDao {
     void insertRecognizedActivity(RecognizedActivity recognizedActivity);
 
     // Get Recognized Activity
-    @Query("SELECT * FROM current_activity_table WHERE id = '0'")
-    RecognizedActivity getRecognizedActivity();
+    @Query("SELECT * FROM current_activity_table")
+    List<RecognizedActivity> getRecognizedActivity();
 }

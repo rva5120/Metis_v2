@@ -75,7 +75,7 @@ abstract class InformationDatabase extends RoomDatabase {
         INSTANCE.informationDao().insertRecognizedActivity(recognizedActivity);
     }
 
-    RecognizedActivity getCurrentActivity() {
+    List<RecognizedActivity> getCurrentActivity() {
         return INSTANCE.informationDao().getRecognizedActivity();
     }
 }

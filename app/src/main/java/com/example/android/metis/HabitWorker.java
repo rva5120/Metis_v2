@@ -10,6 +10,8 @@ import androidx.work.WorkerParameters;
 
 public class HabitWorker extends Worker {
 
+    private static final String LOG = "METIS - DBG";
+
     // Constructor
     public HabitWorker(@NonNull Context appContext,
                        @NonNull WorkerParameters workerParameters) {
@@ -45,7 +47,7 @@ public class HabitWorker extends Worker {
             InformationDatabase informationDatabase = InformationDatabase.getDatabase(getApplicationContext());
             informationDatabase.insertHabit(habit);
 
-            Log.d("HABIT_WORKER/", "Recorded a habit!!");
+            Log.d(LOG, "HABIT_WORKER/: Recorded a habit!!");
 
             return Worker.Result.success();
         } catch (Throwable throwable) {

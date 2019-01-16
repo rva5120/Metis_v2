@@ -18,6 +18,8 @@ import androidx.work.WorkerParameters;
 
 public class AppsWorker extends Worker {
 
+    private static final String LOG = "METIS - DBG";
+
     public AppsWorker(@NonNull Context context,
                       @NonNull WorkerParameters workerParameters) {
         super(context, workerParameters);
@@ -53,7 +55,7 @@ public class AppsWorker extends Worker {
             Habit habit = WorkerUtils.getCurrentHabit(context, Boolean.FALSE);
             database.informationDao().insertHabit(habit);
 
-            Log.d("APPS_WORKER/", "Successfully stored the apps (and a bonus habit...)!");
+            Log.d(LOG, "APPS_WORKER/: Successfully stored the apps (and a bonus habit...)!");
 
             return Worker.Result.success();
 

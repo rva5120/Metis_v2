@@ -7,11 +7,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.security.acl.LastOwnerException;
 import java.util.List;
 
 import androidx.work.Worker;
@@ -20,6 +22,8 @@ import androidx.work.WorkerParameters;
 
 // Work Manager Solution - Part 5 (next: MainActivity)
 public class DumpDBToFileWorker extends Worker {
+
+    private static final String LOG = "METIS - DBG";
 
     public DumpDBToFileWorker(@NonNull Context context,
                               @NonNull WorkerParameters workerParameters) {
@@ -93,12 +97,16 @@ public class DumpDBToFileWorker extends Worker {
             recordedActivityFile.createNewFile();
             fileOutputStream = new FileOutputStream(recordedActivityFile);
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-            RecognizedActivity recognizedActivities = database.getCurrentActivity();
-            if (recognizedActivities != null) {
-                outputStreamWriter.write(recognizedActivities.getTimestamp() + "," +
-                        recognizedActivities.getRecognizedActivity() + "," +
-                        recognizedActivities.getConfidence() + "\n");
+            List<RecognizedActivity> recognizedActivities = database.getCurrentActivity();
+            if (recognizedActivities.size() > 0) {
+                Log.d(LOG, "DUMP_DB/: Dumping recorded activities (total = " + recognizedActivities.size() + ")");
+                for (RecognizedActivity r: recognizedActivities) {
+                    outputStreamWriter.write(r.getTimestamp() + "," +
+                            r.getRecognizedActivity() + "," +
+                            r.getConfidence() + "\n");
+                }
             } else {
+                Log.d(LOG, "DUMP_DB/: No recorded activities...");
                 outputStreamWriter.write("N/A,N/A,N/A\n");
             }
 

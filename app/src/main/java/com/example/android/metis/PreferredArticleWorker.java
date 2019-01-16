@@ -9,6 +9,8 @@ import androidx.work.WorkerParameters;
 
 public class PreferredArticleWorker extends Worker {
 
+    private static final String LOG = "METIS - DBG";
+
     public PreferredArticleWorker(@NonNull Context context,
                                   @NonNull WorkerParameters workerParameters) {
         super(context, workerParameters);
@@ -36,7 +38,7 @@ public class PreferredArticleWorker extends Worker {
             Habit habit = WorkerUtils.getCurrentHabit(context, Boolean.FALSE);
             InformationDatabase.getDatabase(context.getApplicationContext()).insertHabit(habit);
 
-            Log.d("PREFERREDARTICLE_WORKER", "Saving a preferred article (plus habit)...");
+            Log.d(LOG, "PREFERRED_ARTICLE_WORKER/: Saving a preferred article (plus habit)...");
 
             return Worker.Result.success();
         } catch (Throwable throwable) {

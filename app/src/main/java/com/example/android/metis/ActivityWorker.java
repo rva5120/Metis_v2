@@ -10,6 +10,8 @@ import androidx.work.WorkerParameters;
 
 public class ActivityWorker extends Worker {
 
+    private static final String LOG = "METIS - DBG - AWorker";
+
     // Constructor
     public ActivityWorker(@NonNull Context appContext,
                           @NonNull WorkerParameters workerParameters) {
@@ -26,7 +28,7 @@ public class ActivityWorker extends Worker {
         try {
             WorkerUtils.registerCurrentActivityListener(context);
 
-            Log.d("ACTIVITY_WORKER/", "Registered the Activity Listener Service!");
+            Log.d(LOG, "ACTIVITY_WORKER/: Registered the Activity Listener Service!");
 
             return Worker.Result.success();
         } catch (Throwable throwable) {

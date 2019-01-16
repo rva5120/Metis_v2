@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,10 +102,12 @@ final class WorkerUtils {
             String activityTime;
             InformationDatabase database = InformationDatabase.getDatabase(context.getApplicationContext());
             synchronized (InformationDatabase.getDatabase(context.getApplicationContext())) {
-                if (database.getCurrentActivity() != null) {
-                    currentActivity = database.getCurrentActivity().getRecognizedActivity();
-                    activityConfidence = database.getCurrentActivity().getConfidence();
-                    activityTime = database.getCurrentActivity().getTimestamp();
+                List<RecognizedActivity> activities = database.getCurrentActivity();
+                if (activities.size() > 0) {
+                    RecognizedActivity last_activity = activities.get(activities.size() - 1);
+                    currentActivity = last_activity.getRecognizedActivity();
+                    activityConfidence = last_activity.getConfidence();
+                    activityTime = last_activity.getTimestamp();
                 } else {
                     currentActivity = "N/A";
                     activityConfidence = "N/A";

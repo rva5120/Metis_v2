@@ -23,8 +23,8 @@ class RecognizedActivity {
     private String timestamp;
 
 
-    RecognizedActivity(String recognizedActivity, String confidence, String timestamp) {
-        id = "0";
+    RecognizedActivity(String recognizedActivity, String confidence, @NonNull String timestamp) {
+        id = timestamp;
         this.recognizedActivity = recognizedActivity;
         this.confidence = confidence;
         this.timestamp = timestamp;
@@ -41,7 +41,7 @@ class RecognizedActivity {
         return timestamp;
     }
 
-    void setId(String id) { this.id = id; }
+    void setId(@NonNull String id) { this.id = id; }
     void setRecognizedActivity(String recognizedActivity) {
         this.recognizedActivity = recognizedActivity;
     }

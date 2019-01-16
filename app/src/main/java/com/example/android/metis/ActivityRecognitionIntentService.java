@@ -15,6 +15,8 @@ import java.util.Calendar;
 
 public class ActivityRecognitionIntentService extends IntentService {
 
+    private static final String LOG = "METIS - DBG (AR)";
+
     // Constructor
     public ActivityRecognitionIntentService() {
         super("Custom Activity Recognition Intent Service");
@@ -29,7 +31,7 @@ public class ActivityRecognitionIntentService extends IntentService {
 
             if (result.getTransitionEvents() != null) {
                 for (ActivityTransitionEvent event : result.getTransitionEvents()) {
-                    Log.d("AR TRANSITION RCVD", "This is what we received..." + event.toString());
+                    Log.d(LOG, "AR TRANSITION RCVD: This is what we received..." + event.toString());
 
                     String activity = getStringActivity(event.getActivityType());
                     String confidence = "N/A_tran";
@@ -45,9 +47,8 @@ public class ActivityRecognitionIntentService extends IntentService {
                         Habit habit = WorkerUtils.getCurrentHabit(getApplicationContext(), Boolean.FALSE);
                         InformationDatabase.getDatabase(getApplicationContext()).insertHabit(habit);
 
-                        Log.d("AR INTENT SERVICE//", "AR Sent us a TRANSITION Activity (added activity and habit to DB..)!!");
+                        Log.d(LOG, "AR INTENT SERVICE//: AR Sent us a TRANSITION Activity (added activity and habit to DB..)!!");
                     }
-
                 }
             }
         }
@@ -69,7 +70,7 @@ public class ActivityRecognitionIntentService extends IntentService {
                 Habit habit = WorkerUtils.getCurrentHabit(getApplicationContext(), Boolean.FALSE);
                 InformationDatabase.getDatabase(getApplicationContext()).insertHabit(habit);
 
-                Log.d("AR INTENT SERVICE/", "AR Sent us an Updated Activity (added activity and habit to DB..)!!");
+                Log.d(LOG, "AR INTENT SERVICE/: AR Sent us an Updated Activity (added activity and habit to DB..)!!");
             }
         }
     }
