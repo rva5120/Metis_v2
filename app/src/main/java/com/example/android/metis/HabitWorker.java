@@ -49,6 +49,7 @@ public class HabitWorker extends Worker {
 
             return Worker.Result.success();
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return Worker.Result.failure();
         }
     }

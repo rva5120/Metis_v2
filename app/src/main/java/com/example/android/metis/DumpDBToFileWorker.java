@@ -94,9 +94,13 @@ public class DumpDBToFileWorker extends Worker {
             fileOutputStream = new FileOutputStream(recordedActivityFile);
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             RecognizedActivity recognizedActivities = database.getCurrentActivity();
-            outputStreamWriter.write(recognizedActivities.getTimestamp() + "," +
-            recognizedActivities.getRecognizedActivity() + "," +
-            recognizedActivities.getConfidence() + "\n");
+            if (recognizedActivities != null) {
+                outputStreamWriter.write(recognizedActivities.getTimestamp() + "," +
+                        recognizedActivities.getRecognizedActivity() + "," +
+                        recognizedActivities.getConfidence() + "\n");
+            } else {
+                outputStreamWriter.write("N/A,N/A,N/A\n");
+            }
 
             // ** Notify the user that the download is complete! **
             // 1. Create a notification channel
@@ -127,6 +131,7 @@ public class DumpDBToFileWorker extends Worker {
             e.printStackTrace();
             return Worker.Result.failure();
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return Worker.Result.failure();
         }
 

@@ -98,9 +98,15 @@ final class WorkerUtils {
             String activityTime;
             InformationDatabase database = InformationDatabase.getDatabase(context.getApplicationContext());
             synchronized (InformationDatabase.getDatabase(context.getApplicationContext())) {
-                currentActivity = database.getCurrentActivity().getRecognizedActivity();
-                activityConfidence = database.getCurrentActivity().getConfidence();
-                activityTime = database.getCurrentActivity().getTimestamp();
+                if (database.getCurrentActivity() != null) {
+                    currentActivity = database.getCurrentActivity().getRecognizedActivity();
+                    activityConfidence = database.getCurrentActivity().getConfidence();
+                    activityTime = database.getCurrentActivity().getTimestamp();
+                } else {
+                    currentActivity = "N/A";
+                    activityConfidence = "N/A";
+                    activityTime = "N/A";
+                }
             }
 
             // Get App State

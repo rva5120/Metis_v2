@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -58,19 +59,27 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
+                Log.d("INITIALIZATION", "Requested a worker to get AR updates...");
+
                 PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
 
+                Log.d("Inititalization", "Requested to get periodic updates of habits");
+
                 PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
+
+                Log.d("Initialization", "Requested to get periodic updates of apps");
 
                 file.createNewFile();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            Log.d("INITIALIZATION","Checking Activity File exisits! No need to initialize workers...?");
         }
     }
 
