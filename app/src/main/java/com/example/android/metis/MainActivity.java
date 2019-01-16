@@ -45,13 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Work Manager Solution  - Part 1 (next: WorkerUtils)
         // 1. Check if the activity has been already recorded at some point FILE exists! (on our private dir)
-        File file = new File(getApplicationContext().getFilesDir(), "checking.activity");
-        if (file.exists()) {
-
-            // We are good to go, no need to schedule anything else!
-
-        } else {
-
+        File file = new File("/sdcard", "checking.activity");
+        if (!file.exists()) {
             // Create a new file and schedule the Workers
             try {
 
@@ -63,20 +58,19 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
-                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, 10, TimeUnit.MINUTES)
+                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
 
-                PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, 5, TimeUnit.DAYS)
+                PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
 
                 file.createNewFile();
 
-            } catch (IOException e ){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

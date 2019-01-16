@@ -36,6 +36,8 @@ public class ActivityRecognitionIntentService extends IntentService {
                 InformationDatabase.getDatabase(getApplicationContext()).insertCurrentActivity(recognizedActivity);
 
                 // Get Habit and store it!!
+                Habit habit = WorkerUtils.getCurrentHabit(getApplicationContext(), Boolean.FALSE);
+                InformationDatabase.getDatabase(getApplicationContext()).insertHabit(habit);
 
                 Log.d("AR INTENT SERVICE/", "AR Sent us an Updated Activity!!");
             }
