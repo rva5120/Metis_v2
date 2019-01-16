@@ -74,13 +74,13 @@ class Habit {
     String getTimestamp() {
         return timestamp;
     }
-    String getid() {
+    String getId() {
         return id;
     }
     String getCity() {
         return city;
     }
-    String getstate() {
+    String getState() {
         return state;
     }
     String getOnWiFi() {

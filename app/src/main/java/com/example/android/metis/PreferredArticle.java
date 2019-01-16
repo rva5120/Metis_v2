@@ -31,7 +31,7 @@ class PreferredArticle {
     String getTimestamp() {
         return timestamp;
     }
-    String getApps() {
+    String getArticle() {
         return article;
     }
 

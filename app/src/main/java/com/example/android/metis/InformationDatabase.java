@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 
-@Database(entities = {Habit.class, Apps.class, PreferredArticle.class}, version = 1, exportSchema = false)
+@Database(entities = {Habit.class, Apps.class, PreferredArticle.class, RecognizedActivity.class}, version = 1, exportSchema = false)
 abstract class InformationDatabase extends RoomDatabase {
 
     // Attributes

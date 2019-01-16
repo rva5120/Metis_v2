@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -47,6 +48,8 @@ public class AppsWorker extends Worker {
             // Send the apps record to the DB
             InformationDatabase database = InformationDatabase.getDatabase(context);
             database.informationDao().insertApps(apps);
+
+            Log.d("APPS_WORKER/", "Successfully stored the apps!");
 
             return Worker.Result.success();
 

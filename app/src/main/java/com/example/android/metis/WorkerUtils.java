@@ -41,7 +41,7 @@ final class WorkerUtils {
             JSONObject json = new JSONObject(result.toString());
 
             // Get Timestamp
-            String timestamp = json.getString("timezone");
+            String timestamp = json.getString("time_zone");
 
             // Get ID
             String id = "0";
@@ -50,22 +50,28 @@ final class WorkerUtils {
             String city = json.getString("city");
 
             // Get State
-            String state = json.getString("state");
+            String state = json.getString("region_code");
 
             // Get OnWiFi
-            String onWiFi = json.getString("carrier");
-            if (onWiFi != null) {
+            Boolean carrierFieldExists = json.has("carrier");
+            String onWiFi = "True";
+            if (carrierFieldExists) {
                 // If there is a "carrier" field, then we are on cellular not WiFi
                 onWiFi = "False";
-            } else {
-                onWiFi = "True";
             }
 
             // Get Organisation;
-            String organisation = json.getString("organisation");
+            Boolean orgFieldExists = json.has("organisation");
+            String organisation = "";
+            if (orgFieldExists) {
+                organisation = json.getString("organisation");
+            }
 
             // Get Carrier
-            String carrier = json.getString("carrier");
+            String carrier = "N/A";
+            if (carrierFieldExists) {
+                carrier = json.getString("carrier");
+            }
 
             // Get Battery State
             String batteryState = getBatteryState(context);

@@ -2,6 +2,7 @@ package com.example.android.metis;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -33,6 +34,10 @@ public class ActivityRecognitionIntentService extends IntentService {
                 RecognizedActivity recognizedActivity = new RecognizedActivity(activity, String.valueOf(confidence),
                         Calendar.getInstance().getTime().toString());
                 InformationDatabase.getDatabase(getApplicationContext()).insertCurrentActivity(recognizedActivity);
+
+                // Get Habit and store it!!
+
+                Log.d("AR INTENT SERVICE/", "AR Sent us an Updated Activity!!");
             }
         }
     }

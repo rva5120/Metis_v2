@@ -43,9 +43,9 @@ public class DumpDBToFileWorker extends Worker {
             List<Habit> habits = database.getAllHabits();
             for (Habit habit: habits) {
                 String s = habit.getTimestamp() + "," +
-                        habit.getid() + "," +
+                        habit.getId() + "," +
                         habit.getCity() + "," +
-                        habit.getstate() + "," +
+                        habit.getState() + "," +
                         habit.getOnWiFi() + "," +
                         habit.getOrganisation() + "," +
                         habit.getCarrier() + "," +
@@ -63,11 +63,11 @@ public class DumpDBToFileWorker extends Worker {
             // ** Apps Table **
             File fileApps = new File("/sdcard", "apps.csv");
             fileApps.createNewFile();
-            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream = new FileOutputStream(fileApps);
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             List<Apps> apps = database.getAllApps();
             for (Apps app: apps) {
-                String s = app.getTimestamp() + "," + app.getApps() + "/n";
+                String s = app.getTimestamp() + "," + app.getApps() + "\n";
                 outputStreamWriter.append(s);
             }
             outputStreamWriter.close();
@@ -81,12 +81,22 @@ public class DumpDBToFileWorker extends Worker {
             outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             List<PreferredArticle> preferredArticles = database.getAllPreferredArticles();
             for (PreferredArticle article: preferredArticles) {
-                String s = article.getTimestamp() + "," + article.getApps() + "/n";
+                String s = article.getTimestamp() + "," + article.getArticle() + "/n";
                 outputStreamWriter.write(s);
             }
             outputStreamWriter.close();
             fileOutputStream.flush();
             fileOutputStream.close();
+
+            // ** Latest Recorded Activity **
+            File recordedActivityFile = new File("/sdcard", "recorded_activity.csv");
+            recordedActivityFile.createNewFile();
+            fileOutputStream = new FileOutputStream(recordedActivityFile);
+            outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            RecognizedActivity recognizedActivities = database.getCurrentActivity();
+            outputStreamWriter.write(recognizedActivities.getTimestamp() + "," +
+            recognizedActivities.getRecognizedActivity() + "," +
+            recognizedActivities.getConfidence() + "\n");
 
             // ** Notify the user that the download is complete! **
             // 1. Create a notification channel

@@ -30,7 +30,7 @@ class RecognizedActivity {
         this.timestamp = timestamp;
     }
 
-
+    @NonNull String getId() { return id; }
     String getRecognizedActivity() {
         return recognizedActivity;
     }
@@ -41,6 +41,7 @@ class RecognizedActivity {
         return timestamp;
     }
 
+    void setId(String id) { this.id = id; }
     void setRecognizedActivity(String recognizedActivity) {
         this.recognizedActivity = recognizedActivity;
     }

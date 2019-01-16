@@ -2,6 +2,7 @@ package com.example.android.metis;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -24,6 +25,9 @@ public class ActivityWorker extends Worker {
 
         try {
             WorkerUtils.registerCurrentActivityListener(context);
+
+            Log.d("ACTIVITY_WORKER/", "Registered the Activity Listener Service!");
+
             return Worker.Result.success();
         } catch (Throwable throwable) {
             return Worker.Result.failure();

@@ -1,5 +1,10 @@
 package com.example.android.metis;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,15 +13,12 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
+import java.security.Permission;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkContinuation;
 import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,8 +32,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get Instance of the Database
-        //informationDatabase = InformationDatabase.getDatabase(getApplicationContext());
+        // Ask for permissions!
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
+        }
+
+        // Get Instance of WorkManager
+        mWorkManager = WorkManager.getInstance();
 
         // Work Manager Solution  - Part 1 (next: WorkerUtils)
         // 1. Check if the activity has been already recorded at some point FILE exists! (on our private dir)
@@ -44,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Create a new file and schedule the Workers
             try {
-                file.createNewFile();
 
                 // Register Work Requests to get Activity Recognition updates, and to store Habits periodically
                 Data.Builder builder = new Data.Builder();
@@ -54,14 +63,15 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
-                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, 1, TimeUnit.HOURS)
-                        .setInputData(builder.build())
+                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, 10, TimeUnit.MINUTES)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
 
                 PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, 5, TimeUnit.DAYS)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
+
+                file.createNewFile();
 
             } catch (IOException e ){
                 e.printStackTrace();
