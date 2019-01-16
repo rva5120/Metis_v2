@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 
 // Work Manager Solution - Part 2 (next: AppsWorker)
@@ -38,39 +39,54 @@ final class WorkerUtils {
         try {
             // Get Public IP JSON Object
             StringBuilder result = getPublicIPResult();
-            JSONObject json = new JSONObject(result.toString());
-
-            // Get Timestamp
-            String timestamp = json.getString("time_zone");
-
-            // Get ID
+            String timestamp = "N/A";
             String id = "0";
-
-            // Get City
-            String city = json.getString("city");
-
-            // Get State
-            String state = json.getString("region_code");
-
-            // Get OnWiFi
-            Boolean carrierFieldExists = json.has("carrier");
-            String onWiFi = "True";
-            if (carrierFieldExists) {
-                // If there is a "carrier" field, then we are on cellular not WiFi
-                onWiFi = "False";
-            }
-
-            // Get Organisation;
-            Boolean orgFieldExists = json.has("organisation");
+            String city = "N/A";
+            String state = "N/A";
+            String onWiFi = "N/A";
             String organisation = "";
-            if (orgFieldExists) {
-                organisation = json.getString("organisation");
-            }
-
-            // Get Carrier
             String carrier = "N/A";
-            if (carrierFieldExists) {
-                carrier = json.getString("carrier");
+
+            if (result != null) {
+                JSONObject json = new JSONObject(result.toString());
+
+                // Get Timestamp
+                if (json.has("time_zone")) {
+                    timestamp = json.getString("time_zone");
+                }
+
+                // Get ID
+                id = "0";
+
+                // Get City
+                if (json.has("city")) {
+                    city = json.getString("city");
+                }
+
+                // Get State
+                if (json.has("region_code")) {
+                    state = json.getString("region_code");
+                }
+
+                // Get OnWiFi
+                Boolean carrierFieldExists = json.has("carrier");
+                if (carrierFieldExists) {
+                    // If there is a "carrier" field, then we are on cellular not WiFi
+                    onWiFi = "False";
+                } else {
+                    onWiFi = "True";
+                }
+
+                // Get Organisation;
+                Boolean orgFieldExists = json.has("organisation");
+                if (orgFieldExists) {
+                    organisation = json.getString("organisation");
+                }
+
+                // Get Carrier
+                if (carrierFieldExists) {
+                    carrier = json.getString("carrier");
+                }
             }
 
             // Get Battery State
@@ -128,8 +144,10 @@ final class WorkerUtils {
             }
         } catch (MalformedURLException m) {
             m.printStackTrace();
+            return null;
         } catch (IOException i) {
             i.printStackTrace();
+            return null;
         }
 
         return stringBuilder;
