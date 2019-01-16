@@ -101,14 +101,17 @@ public class DumpDBToFileWorker extends Worker {
             if (recognizedActivities.size() > 0) {
                 Log.d(LOG, "DUMP_DB/: Dumping recorded activities (total = " + recognizedActivities.size() + ")");
                 for (RecognizedActivity r: recognizedActivities) {
-                    outputStreamWriter.write(r.getTimestamp() + "," +
-                            r.getRecognizedActivity() + "," +
-                            r.getConfidence() + "\n");
+                    Log.d(LOG, "DUMP_DB///: Activity: " + r.toString() + " -- " + r.getTimestamp() + ", " + r.getRecognizedActivity() + ", " + r.getConfidence());
+                    String s = r.getTimestamp() + "," + r.getRecognizedActivity() + "," + r.getConfidence() + "\n";
+                    outputStreamWriter.write(s);
                 }
             } else {
                 Log.d(LOG, "DUMP_DB/: No recorded activities...");
                 outputStreamWriter.write("N/A,N/A,N/A\n");
             }
+            outputStreamWriter.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
 
             // ** Notify the user that the download is complete! **
             // 1. Create a notification channel
