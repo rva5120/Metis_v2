@@ -33,7 +33,10 @@ public class PreferredArticleWorker extends Worker {
 
             InformationDatabase.getDatabase(context.getApplicationContext()).insertPreferredArticle(preferredArticle);
 
-            Log.d("PREFERREDARTICLE_WORKER", "Saving a preferred article...");
+            Habit habit = WorkerUtils.getCurrentHabit(context, Boolean.FALSE);
+            InformationDatabase.getDatabase(context.getApplicationContext()).insertHabit(habit);
+
+            Log.d("PREFERREDARTICLE_WORKER", "Saving a preferred article (plus habit)...");
 
             return Worker.Result.success();
         } catch (Throwable throwable) {

@@ -49,7 +49,11 @@ public class AppsWorker extends Worker {
             InformationDatabase database = InformationDatabase.getDatabase(context);
             database.informationDao().insertApps(apps);
 
-            Log.d("APPS_WORKER/", "Successfully stored the apps!");
+            // Add a habit to the DB as well...
+            Habit habit = WorkerUtils.getCurrentHabit(context, Boolean.FALSE);
+            database.informationDao().insertHabit(habit);
+
+            Log.d("APPS_WORKER/", "Successfully stored the apps (and a bonus habit...)!");
 
             return Worker.Result.success();
 
