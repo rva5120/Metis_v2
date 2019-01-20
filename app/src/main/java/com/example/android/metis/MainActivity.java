@@ -1,8 +1,10 @@
 package com.example.android.metis;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
         // Ask for permissions!
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    0);
+            Intent intent = new Intent(this, PermissionsActivity.class);
+            startActivity(intent);
         }
 
         // Get Instance of WorkManager
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Work Manager Solution  - Part 1 (next: WorkerUtils)
         // 1. Check if the activity has been already recorded at some point FILE exists! (on our private dir)
-        File file = new File("/sdcard", "checking.activity.2");
+        File file = new File("/sdcard", "checking.activity.1.19");
         if (!file.exists()) {
             // Create a new file and schedule the Workers
             try {
@@ -92,10 +93,17 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG,"Checking Activity File exits! No need to initialize workers...?");
         }
 
+    }
 
 
-        // Set Alarm Manager
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        if (grantResults.length == 0) {
+            Toast.makeText(MainActivity.this, "Storage permission must be granted to open Metis.", Toast.LENGTH_LONG).show();
+            MainActivity.this.finish();
+        }
     }
 
 
