@@ -192,9 +192,17 @@ final class WorkerUtils {
 
     static void registerCurrentActivityListener(Context context) {
 
+
         ActivityRecognitionClient activityRecognitionClient = ActivityRecognition.getClient(context);
-        Intent intent = new Intent(context, ActivityRecognitionIntentService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Option 1 (stops working after a while to save resources): Intent Service
+        //Intent intent = new Intent(context, ActivityRecognitionIntentService.class);
+        //PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Option 2: Broadcast Receiver
+        Intent intent = new Intent(context, ActivityRecognitionBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
         // Request updates from AR API every 10 minutes
         //activityRecognitionClient.requestActivityUpdates(600000, pendingIntent);
 

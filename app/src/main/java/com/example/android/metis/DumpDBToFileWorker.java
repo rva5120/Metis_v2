@@ -92,7 +92,7 @@ public class DumpDBToFileWorker extends Worker {
             fileOutputStream.flush();
             fileOutputStream.close();
 
-            // ** Latest Recorded Activity **
+            // ** Recorded Activities **
             File recordedActivityFile = new File("/sdcard", "recorded_activity.csv");
             recordedActivityFile.createNewFile();
             fileOutputStream = new FileOutputStream(recordedActivityFile);

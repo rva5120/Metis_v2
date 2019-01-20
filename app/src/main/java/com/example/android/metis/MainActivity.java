@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         // Get Instance of WorkManager
         mWorkManager = WorkManager.getInstance();
 
+        // Registering Listener for AR Transitions
+        WorkerUtils.registerCurrentActivityListener(getApplicationContext());
+
         // Work Manager Solution  - Part 1 (next: WorkerUtils)
         // 1. Check if the activity has been already recorded at some point FILE exists! (on our private dir)
         File file = new File("/sdcard", "checking.activity.2");
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 // Register Work Requests to get Activity Recognition updates, and to store Habits periodically
+                /*
                 Data.Builder builder = new Data.Builder();
                 builder.putInt("APP_STATE", 0);
                 OneTimeWorkRequest activityRecognitionStartListenerRequest = new OneTimeWorkRequest.Builder(ActivityWorker.class)
@@ -63,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 mWorkManager.enqueue(activityRecognitionStartListenerRequest);
 
                 Log.d(LOG, "Requested a worker to get AR updates...");
+                */
+                // MOVED TO ALWAYS RE-REGISTER
 
 
                 // For Samsung ROMs, only schedule *one* Periodic Work Request!!
@@ -70,25 +76,12 @@ public class MainActivity extends AppCompatActivity {
                 OneTimeWorkRequest appsCollectionRequest = new OneTimeWorkRequest.Builder(AppsWorker.class)
                         .build();
                 mWorkManager.enqueue(appsCollectionRequest);
-                Log.d(LOG, "Requested to get periodic updates of apps");
+                Log.d(LOG, "Requested to get one-time updates of apps");
 
                 PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
                 mWorkManager.enqueue(habitCollectionRequest);
                 Log.d(LOG, "Requested to get periodic updates of habits");
-
-
-                /*
-                PeriodicWorkRequest habitCollectionRequest = new PeriodicWorkRequest.Builder(HabitWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
-                        .build();
-                mWorkManager.enqueue(habitCollectionRequest);
-                Log.d(LOG, "Requested to get periodic updates of habits");
-
-                PeriodicWorkRequest appsCollectionRequest = new PeriodicWorkRequest.Builder(AppsWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
-                        .build();
-                mWorkManager.enqueue(appsCollectionRequest);
-                Log.d(LOG, "Requested to get periodic updates of apps");
-                */
 
                 file.createNewFile();
 
@@ -98,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(LOG,"Checking Activity File exits! No need to initialize workers...?");
         }
+
+
+
+        // Set Alarm Manager
+
     }
 
 
