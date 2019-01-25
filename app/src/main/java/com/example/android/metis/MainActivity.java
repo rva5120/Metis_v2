@@ -146,9 +146,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayArticle() {
 
-        String articleURL = "https://rva5120.github.io/tutorials/2018/02/26/introductory-tutorial";
+        String articleURL = "https://rva5120.github.io/tutorials/2019/01/19/metis";
 
         WebView webView = findViewById(R.id.webview);
+        webView.clearCache(false);
         webView.loadUrl(articleURL);
     }
 
